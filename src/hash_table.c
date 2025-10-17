@@ -18,6 +18,7 @@ typedef struct HashTable{
 
 }HashTable;
 
+//Lifecycle Functions
 HashTable* ht_create(int num_buckets, const HashTableConfig* config){
 
     HashTable* new_ht;
@@ -41,14 +42,38 @@ HashTable* ht_create(int num_buckets, const HashTableConfig* config){
     return new_ht;
 }
 
+//Generic Functions
 void ht_insert(HashTable* ht, void* key, void* value){
-
+    
     int index = ht->hash_function(key) % ht->num_buckets;
+    Entry* new_entry = (Entry*)malloc(sizeof(Entry));
+    new_entry->key = key;
+    new_entry->value = value;
+    
+    //Handles collision
     if(ht->buckets[index] != NULL){
-        list_push_back(ht->buckets[index], value);
+        list_push_back(ht->buckets[index], new_entry);
         return;
     }
+
     ht->buckets[index] = list_create(ht->free_value);
-    list_push_front(ht->buckets[index], value);
+    list_push_front(ht->buckets[index], new_entry);
     return;
+}
+
+void* ht_get(HashTable* ht, void* key){
+
+    int index = ht->hash_function(key) % ht->num_buckets;
+    if(ht->buckets[index] == NULL){
+        printf("No entry with this key");
+        return NULL;
+    }
+    Entry* entry = get_by_key(ht->buckets[index], key, compare);
+    return entry->value;
+}
+
+//Helper Functions
+void* compare(void* element){
+    Entry* entry = element;
+    return entry;
 }

@@ -11,10 +11,9 @@ unsigned long hash_str(char* str){
     }
     return hash;
 }
-
 int main(){
     
-    //Configuring the table 
+    //Configuring the table
     HashTableConfig* config = (HashTableConfig*)malloc(sizeof(HashTableConfig));
     config->free_key = NULL;
     config->hash_function  = (unsigned long (*)(void*))hash_str;
@@ -23,7 +22,8 @@ int main(){
 
     HashTable* ht = ht_create(100, config);
 
-    
+    ht_insert(ht, "KEY", "VALUE");
+
     return 0;
 }
 

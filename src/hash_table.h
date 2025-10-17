@@ -10,9 +10,16 @@ typedef struct HashTableConfig{
     void (*free_value)(void* value);
 }HashTableConfig;
 
-//HashTable Functions
+//Lifecylce Functions
 HashTable* ht_create(int num_buckets, const HashTableConfig* config);
 bool ht_destroy(HashTable* ht);
+
+//Generic Functions
 void ht_insert(HashTable* ht, void* key, void* value);
+void* ht_get(HashTable* ht, void* key);
+bool ht_remove(HashTable* ht, void* key);
+
+//Helper Functions
+void* compare(void* element);
 
 #endif
