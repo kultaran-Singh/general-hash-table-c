@@ -14,12 +14,12 @@ typedef struct List{
     struct Node* tail;
     void (*free_data)(void* data);
     size_t size;
-}list;
+}List;
 
 //List Functions
-list* list_create(void (*free_data)(void* data)){
-    list* l;
-    l = (list*)malloc(sizeof(list));
+List* list_create(void (*free_data)(void* data)){
+    List* l;
+    l = (List*)malloc(sizeof(List));
     l->head = NULL;
     l->free_data = free_data;
     l->tail = NULL;
@@ -27,13 +27,13 @@ list* list_create(void (*free_data)(void* data)){
     return l;
 }
 
-bool list_destroy(list* l){
+bool list_destroy(List* l){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
     }
-    node* current_node = l->head;
-    node* next_node;
+    Node* current_node = l->head;
+    Node* next_node;
 
     while(current_node != NULL){
         next_node = current_node->next;
@@ -50,9 +50,9 @@ bool list_destroy(list* l){
 }
 
 //Insertion Functions
-void list_push_back(list* l, void* object){
+void list_push_back(List* l, void* object){
     
-    node* new_node = (node*)malloc(sizeof(node));
+    Node* new_node = (Node*)malloc(sizeof(node));
     if(new_node == NULL){
         printf("ERROR: MEMORY ALLOCATION FAILED.\n");
         return;
@@ -67,7 +67,7 @@ void list_push_back(list* l, void* object){
         l->size++;
         return;
     }
-    node* current = l-> head;
+    Node* current = l-> head;
     while(current->next != NULL){
         current = current->next;
     }
@@ -78,19 +78,19 @@ void list_push_back(list* l, void* object){
 
 }
 
-void list_push_front(list* l, void* object){
+void list_push_front(List* l, void* object){
 
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return;
     }
-    node* current = l->head;
+    Node* current = l->head;
     if(current == NULL){
         current->element = object;
         l->size++;
         return;
     }
-    node* new_node = (node*)malloc(sizeof(node));
+    Node* new_node = (Node*)malloc(sizeof(node));
     if(new_node == NULL){
         printf("ERROR: MEMORY ALLOCATION FAILED.\n");
         return;
@@ -102,7 +102,7 @@ void list_push_front(list* l, void* object){
 
 }
 
-void list_push_at_index(list* l, void* object, int index){
+void list_push_at_index(List* l, void* object, int index){
     
     if(l == NULL){
         printf("ERROR: List does not exist\n");
@@ -122,12 +122,12 @@ void list_push_at_index(list* l, void* object, int index){
         return;
     }
     int current_index = 0;
-    node* current_node = l->head;
+    Node* current_node = l->head;
     while(current_index < index - 1){
         current_node = current_node->next;
         current_index++;
     }
-    node* new_node = (node*)malloc(sizeof(node));
+    Node* new_node = (Node*)malloc(sizeof(node));
     if(new_node == NULL){
         printf("ERROR: MEMORY ALLOCATION FAILED.\n");
         return;
@@ -142,7 +142,7 @@ void list_push_at_index(list* l, void* object, int index){
 }
 
 //Deletion Functions
-void* list_pop_back(list* l){
+void* list_pop_back(List* l){
 
     if(l == NULL){
         printf("ERROR: List does not exist\n");
@@ -152,8 +152,8 @@ void* list_pop_back(list* l){
         printf("ERROR: List is empty\n");
         return NULL;
     }
-    node* current_node = l->head;
-    node* last_node;
+    Node* current_node = l->head;
+    Node* last_node;
 
     //Iterating upto the second last node
     while(current_node->next->next != NULL){
@@ -170,7 +170,7 @@ void* list_pop_back(list* l){
     return value;
 }
 
-void* list_pop_front(list* l){
+void* list_pop_front(List* l){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
@@ -179,7 +179,7 @@ void* list_pop_front(list* l){
         printf("ERROR: List is empty\n");
         return NULL;
     }
-    node* to_delete = l->head;
+    Node* to_delete = l->head;
 
     //Getting Value of node to delete
     void* value = to_delete->element;
@@ -192,7 +192,7 @@ void* list_pop_front(list* l){
 
 }
 
-void* list_pop_at_index(list* l, int index){
+void* list_pop_at_index(List* l, int index){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
@@ -209,13 +209,13 @@ void* list_pop_at_index(list* l, int index){
     }
 
     int current_index = 0;
-    node* current_node = l->head;
+    Node* current_node = l->head;
     //Iterating upto the node before index to delete
     while(current_index < index - 1){
         current_node = current_node->next;
         current_index++;
     }
-    node* toDelete = current_node->next;
+    Node* toDelete = current_node->next;
     current_node->next = current_node->next->next;
     void* value = toDelete->element;
     
@@ -225,7 +225,7 @@ void* list_pop_at_index(list* l, int index){
 }
 
 //Lookup Functions
-void* get_item_at_index(list*l, int index){
+void* get_item_at_index(List*l, int index){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
@@ -242,7 +242,7 @@ void* get_item_at_index(list*l, int index){
     }
 
     int current_index = 0;
-    node* current_node = l->head;
+    Node* current_node = l->head;
     //Iterating upto the node before index to get
     while(current_index < index - 1){
         current_node = current_node->next;
@@ -252,11 +252,11 @@ void* get_item_at_index(list*l, int index){
 }
 
 //General Functions
-size_t get_list_size(list* l){
+size_t get_list_size(List* l){
     return l->size;
 }
 
-void list_for_each(list* l, void (*operation)(void* data)){
+void list_for_each(List* l, void (*operation)(void* data)){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return;
@@ -265,7 +265,7 @@ void list_for_each(list* l, void (*operation)(void* data)){
         printf("ERROR: List is empty\n");
         return;
     }
-    node* current_node = l->head;
+    Node* current_node = l->head;
     if(operation == NULL){
         printf("No Operation Provided\n");
         return;
