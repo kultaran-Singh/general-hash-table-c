@@ -19,7 +19,8 @@ void* list_pop_front(List* l);
 void* list_pop_at_index(List* l, int index);
 
 //Lookup Functions
-void* get_item_at_index(List* l, int index);
+void* get_by_index(List* l, int index);
+void* get_by_key(List* l,void* key, void* (*operation)(void* data));
 
 //General Functions
 size_t get_list_size(List* l);

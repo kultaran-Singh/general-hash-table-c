@@ -228,7 +228,7 @@ void* list_pop_at_index(List* l, int index){
 }
 
 //Lookup Functions
-void* get_item_at_index(List*l, int index){
+void* get_by_index(List*l, int index){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
@@ -252,6 +252,30 @@ void* get_item_at_index(List*l, int index){
         current_index++;
     }
     return current_node->next->element;
+}
+
+void* get_by_key(List* l, void* key, void* (*operation)(void* data)){
+    if(l == NULL){
+        printf("ERROR: List does not exist\n");
+        return NULL;
+    }
+    if(l->head == NULL){
+        printf("ERROR: List is empty\n");
+        return NULL;
+    }
+    if(operation == NULL){
+        printf("ERROR: No Operation Provided\n");
+        return NULL;
+    }
+    Node* current_node = l->head;
+    while(current_node != NULL){
+        
+        if(operation(current_node->element) == key){
+            return current_node->element;
+        }
+        current_node = current_node->next;
+    }
+    return NULL;
 }
 
 //General Functions
