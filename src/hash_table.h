@@ -13,4 +13,6 @@ typedef struct HashTableConfig{
 //HashTable Functions
 HashTable* ht_create(int num_buckets, const HashTableConfig* config);
 bool ht_destroy(HashTable* ht);
+void ht_insert(HashTable* ht, void* key, void* value);
+
 #endif
