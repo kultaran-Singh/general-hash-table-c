@@ -20,10 +20,10 @@ void* list_pop_at_index(List* l, int index);
 
 //Lookup Functions
 void* get_by_index(List* l, int index);
-void* get_by_key(List* l,void* key, void* (*operation)(void* data));
+void* get_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*compare_key)(void* key1, void* key2)); 
 
 //General Functions
 size_t get_list_size(List* l);
-void list_for_each(List* l, void (*operation)(void* data));
+void list_for_each(List* l, void (*operation)(void* element));
 
 #endif

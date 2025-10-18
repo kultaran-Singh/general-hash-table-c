@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <linked_list.h>
+#include "linked_list.h"
 
 typedef struct Node{
     void* element;
@@ -84,8 +84,15 @@ void list_push_front(List* l, void* object){
         printf("ERROR: List does not exist\n");
         return;
     }
-    node* current = l->head;
     node* new_node = (node*)malloc(sizeof(node));
+    if(l->head == NULL){
+        l->head = new_node;
+        l->tail = new_node;
+        l->size++;
+        return;
+    }
+    node* current = l->head;
+    
     if(current == NULL){
         current = new_node;
         current->element = object;
@@ -254,7 +261,10 @@ void* get_by_index(List*l, int index){
     return current_node->next->element;
 }
 
-void* get_by_key(List* l, void* key, void* (*operation)(void* data)){
+void* get_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*compare_key)(void* key1, void* key2)){
+    //This function is used to search through the list and return elements with a matching "Key" attribute.
+    //The first function should get a key from the element and the second function should compare the returned key and
+    //compare it to the second key.
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return NULL;
@@ -263,19 +273,18 @@ void* get_by_key(List* l, void* key, void* (*operation)(void* data)){
         printf("ERROR: List is empty\n");
         return NULL;
     }
-    if(operation == NULL){
+    if(get_key == NULL || compare_key == NULL){
         printf("ERROR: No Operation Provided\n");
         return NULL;
     }
     Node* current_node = l->head;
     while(current_node != NULL){
-        
-        if(operation(current_node->element) == key){
+        if(compare_key(get_key(current_node->element), key)){
             return current_node->element;
         }
         current_node = current_node->next;
     }
-    return NULL;
+    return current_node;
 }
 
 //General Functions
@@ -283,7 +292,7 @@ size_t get_list_size(List* l){
     return l->size;
 }
 
-void list_for_each(List* l, void (*operation)(void* data)){
+void list_for_each(List* l, void (*operation)(void* element)){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return;
@@ -292,11 +301,11 @@ void list_for_each(List* l, void (*operation)(void* data)){
         printf("ERROR: List is empty\n");
         return;
     }
-    Node* current_node = l->head;
     if(operation == NULL){
         printf("No Operation Provided\n");
         return;
     }
+    Node* current_node = l->head;
     while(current_node != NULL){
         operation(current_node->element);
         current_node = current_node->next;
