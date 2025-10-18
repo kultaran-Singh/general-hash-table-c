@@ -234,6 +234,34 @@ void* list_pop_at_index(List* l, int index){
     return value;
 }
 
+void* list_pop_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*compare_key)(void* key1, void* key2)){
+    if(l == NULL){
+        printf("ERROR: List does not exist\n");
+        return NULL;
+    }
+    if(l->head == NULL){
+        printf("ERROR: List is empty\n");
+        return NULL;
+    }
+    if(get_key == NULL || compare_key == NULL){
+        printf("ERROR: No Operation Provided\n");
+        return NULL;
+    }
+    Node* current_node = l->head;
+    while(current_node != NULL){
+        if(compare_key(get_key(current_node->element), key)){
+            Node* toDelete = current_node;
+            current_node = current_node->next;
+            void* value = toDelete->element;
+    
+            free(toDelete);
+            l->size--;
+            return value;
+        }
+        current_node = current_node->next;
+    }
+    return NULL;
+
 //Lookup Functions
 void* get_by_index(List*l, int index){
     if(l == NULL){
@@ -284,7 +312,7 @@ void* get_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*com
         }
         current_node = current_node->next;
     }
-    return current_node;
+    return NULL;
 }
 
 //General Functions
@@ -292,7 +320,7 @@ size_t get_list_size(List* l){
     return l->size;
 }
 
-void list_for_each(List* l, void (*operation)(void* element)){
+void list_for_each(List* l, void (*operation)(void* element, void* contest), void* context){
     if(l == NULL){
         printf("ERROR: List does not exist\n");
         return;
@@ -307,8 +335,14 @@ void list_for_each(List* l, void (*operation)(void* element)){
     }
     Node* current_node = l->head;
     while(current_node != NULL){
-        operation(current_node->element);
-        current_node = current_node->next;
+        if(context == NULL){
+            operation(current_node->element, NULL);
+            current_node = current_node->next;
+        }
+        if(context != NULL){
+            operation(current_node->element, context);
+            current_node = current_node->next;
+        }
     }
     return;
 }

@@ -17,6 +17,7 @@ void list_push_at_index(List* l, void* object, int index);
 void* list_pop_back(List* l);
 void* list_pop_front(List* l);
 void* list_pop_at_index(List* l, int index);
+void* list_pop_by_key(List* l, void* key);
 
 //Lookup Functions
 void* get_by_index(List* l, int index);
@@ -24,6 +25,6 @@ void* get_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*com
 
 //General Functions
 size_t get_list_size(List* l);
-void list_for_each(List* l, void (*operation)(void* element));
+void list_for_each(List* l, void (*operation)(void* element, void* contest), void* context);
 
 #endif
