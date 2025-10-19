@@ -14,8 +14,9 @@ typedef struct HashTableConfig{
 
 //Lifecylce Functions
 HashTable* ht_create(int num_buckets, const HashTableConfig* config);
-void init_ht(HashTable* ht);
+void ht_init(HashTable* ht);
 bool ht_destroy(HashTable* ht);
+
 
 //Generic Functions
 void ht_insert(HashTable* ht, void* key, void* value);
@@ -25,7 +26,8 @@ bool ht_remove(HashTable* ht, void* key);
 //Helper Functions
 void* get_key(void* element);
 void print_entry(void* element, void* context);
-void print_ht(HashTable* ht); //For Debugging
+void ht_print(HashTable* ht); //For Debugging
 void free_entry(void* element, void* ht);
+size_t ht_size(HashTable* ht);
 
 #endif

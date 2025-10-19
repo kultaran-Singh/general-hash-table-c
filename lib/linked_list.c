@@ -52,6 +52,7 @@ bool list_destroy(List* l){
         current_node = next_node;
     }
     free(l);
+    l = NULL;
     return true;
 }
 
@@ -177,6 +178,7 @@ void* list_pop_back(List* l){
     //Gets the value of the last node to return it
     void* value = last_node->element;
     free(last_node);
+    last_node = NULL;
     l->size--;
     return value;
 }
@@ -198,6 +200,7 @@ void* list_pop_front(List* l){
     l->head = l->head->next;
 
     free(to_delete);
+    to_delete = NULL;
     l->size--;
     return value;
 
@@ -231,6 +234,7 @@ void* list_pop_at_index(List* l, int index){
     void* value = toDelete->element;
     
     free(toDelete);
+    toDelete = NULL;
     l->size--;
     return value;
 }
@@ -261,6 +265,8 @@ int list_pop_by_key(List* l,
         l->head = l->head->next;
         free_data(toDelete->element, optional);
         free(toDelete);
+        toDelete = NULL;
+        l->size--;
         return 0;
     }
     while(next_node != NULL){
@@ -270,6 +276,7 @@ int list_pop_by_key(List* l,
             current_node->next = current_node->next->next;
             free_data(next_node->element, optional);
             free(next_node);
+            l->size--;
             return 0;
         }
         current_node = current_node->next;

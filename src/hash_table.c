@@ -11,6 +11,7 @@ typedef struct Entry{
 typedef struct HashTable{
     List** buckets; //Array of linked list heads
     int num_buckets;
+    size_t size;
     unsigned long (*hash_function)(void* key);
     bool (*key_compare)(void* key1, void* key2);
     void (*free_key)(void* key);
@@ -35,6 +36,7 @@ HashTable* ht_create(int num_buckets, const HashTableConfig* config){
     new_ht->free_key = config->free_key;
     new_ht->free_value = config->free_value;
     new_ht->num_buckets = num_buckets;
+    new_ht->size = 0;
 
     //Assigning memory
     new_ht->buckets = calloc(num_buckets, sizeof(List*));
@@ -44,13 +46,13 @@ HashTable* ht_create(int num_buckets, const HashTableConfig* config){
     }
     
     //Initializing array
-    init_ht(new_ht);
+    ht_init(new_ht);
     
     
     return new_ht;
 }
 
-void init_ht(HashTable* ht){
+void ht_init(HashTable* ht){
     for(int i = 0; i < ht->num_buckets; i++){
         ht->buckets[i] = list_create(NULL);
         if(ht->buckets[i] == NULL){
@@ -68,7 +70,9 @@ bool ht_destroy(HashTable* ht){
         list_for_each(ht->buckets[i], free_entry, ht);
         list_destroy(ht->buckets[i]);
     }
+    free(ht->buckets);
     free(ht);
+    ht = NULL;
     return true;
 }
 
@@ -90,6 +94,7 @@ void ht_insert(HashTable* ht, void* key, void* value){
         return;
     }
     list_push_back(ht->buckets[index], new_entry);
+    ht->size++;
     return;
 }
 
@@ -109,6 +114,7 @@ bool ht_remove(HashTable* ht, void* key){
     int index = ht->hash_function(key) % ht->num_buckets;
 
     list_pop_by_key(ht->buckets[index], key, get_key, ht->key_compare, free_entry, ht);
+    ht->size--;
     return true;
 }
 
@@ -126,7 +132,7 @@ void print_entry(void* element, void* context){
     return;
 }
 
-void print_ht(HashTable* ht){
+void ht_print(HashTable* ht){
     for(int i = 0; i < ht->num_buckets; i++){
         printf("%d: ", i);
         int err = list_for_each(ht->buckets[i], print_entry, NULL);
@@ -146,4 +152,8 @@ void free_entry(void* element, void* hash_table){
         ht->free_value(entry->value);
     free(entry);
     return;
+}
+
+size_t ht_size(HashTable* ht){
+    return ht->size;
 }
