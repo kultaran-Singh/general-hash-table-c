@@ -235,6 +235,48 @@ void* list_pop_at_index(List* l, int index){
     return value;
 }
 
+int list_pop_by_key(List* l, 
+                      void* key, 
+                      void* (*get_key)(void* element), 
+                      bool (*compare_key)(void* key1, void* key2), 
+                      void (*free_data)(void* data, void* context),
+                      void* optional){
+
+    if(l == NULL){
+        return 1;
+    }
+    if(l->head == NULL){
+        return 2;
+    }
+    if(get_key == NULL || compare_key == NULL || free_data == NULL){
+        return 4;
+    }
+
+    Node* current_node = l->head;
+    Node* next_node = current_node->next;
+
+    if(compare_key(get_key(current_node->element), key)){
+        //Deleting Head Node 
+        Node* toDelete = l->head;
+        l->head = l->head->next;
+        free_data(toDelete->element, optional);
+        free(toDelete);
+        return 0;
+    }
+    while(next_node != NULL){
+        if(compare_key(get_key(next_node->element), key)){
+            //Delete next node, current_node->next = current_node->next->next
+
+            current_node->next = current_node->next->next;
+            free_data(next_node->element, optional);
+            free(next_node);
+            return 0;
+        }
+        current_node = current_node->next;
+        next_node = next_node->next;
+    }
+    return 0;
+}
 //Lookup Functions
 void* get_by_index(List*l, int index){
     if(l == NULL){
@@ -293,7 +335,7 @@ size_t get_list_size(List* l){
     return l->size;
 }
 
-int list_for_each(List* l, void (*operation)(void* element, void* contest), void* context){
+int list_for_each(List* l, void (*operation)(void* element, void* context), void* context){
     if(l == NULL){
         return 1;
     }

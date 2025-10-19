@@ -1,6 +1,8 @@
 #ifndef HASH_TABLE_H
 #define HASH_TABLE_H
 
+#include "linked_list.h"
+
 typedef struct HashTable HashTable;
 typedef struct Entry Entry;
 typedef struct HashTableConfig{
@@ -22,7 +24,8 @@ bool ht_remove(HashTable* ht, void* key);
 
 //Helper Functions
 void* get_key(void* element);
-void print_entry(void* element);
+void print_entry(void* element, void* context);
 void print_ht(HashTable* ht); //For Debugging
+void free_entry(void* element, void* ht);
 
 #endif
