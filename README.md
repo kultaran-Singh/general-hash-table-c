@@ -11,18 +11,3 @@ This project was built as a practical exercise in C programming, focusing on man
 * **Customizable Behavior**: Accepts user-defined functions for hashing, key comparison, and memory deallocation via a configuration struct.
 * **Automatic Resizing**: The hash table automatically doubles in size when the load factor exceeds 50% to maintain average O(1) performance for insertions and lookups.
 * **Clean and Documented API**: Provides a simple interface for creating, inserting into, retrieving from, removing from, and destroying the hash table.
-
-## File Structure
-
-The project is organized to separate the library code from the demonstration program.
-
-general-hash-table-c/
-├── lib/
-│   ├── linked_list.c       # Dependency: Generic Linked List implementation
-│   └── linked_list.h
-├── src/
-│   ├── hash_table.c        # Hash Table implementation
-│   └── hash_table.h
-├── main.c                  # A demonstration program showing how to use the library
-├── Makefile                # Compiles the project and the demo
-└── README.md
