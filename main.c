@@ -13,9 +13,6 @@ unsigned long hash_str(char* str){
     return hash;
 }
 
-void free_str(char* str){
-    free(str);
-}
 bool compare_str_key(void* key1, void* key2){
     char* key_str1 = (char*) key1;
     char* key_str2 = (char*) key2;
@@ -31,9 +28,9 @@ int main(){
     
     //Configuring the table
     HashTableConfig* config = (HashTableConfig*)malloc(sizeof(HashTableConfig));
-    config->free_key = (void (*)(void*))free_str;
+    config->free_key = NULL;
+    config->free_value = NULL;
     config->hash_function  = (unsigned long (*)(void*))hash_str;
-    config->free_value = (void (*)(void*))free_str;
     config->key_compare = (bool (*)(void* ,void* ))compare_str_key;
 
     HashTable* ht = ht_create(10, config);
@@ -42,14 +39,32 @@ int main(){
         return 1;
     }
 
-    ht_insert(ht, "Vansh", "Worker");
-    ht_insert(ht, "Dev", "Student");
-    ht_insert(ht, "Amit", "Intern");
-    ht_insert(ht, "Rez", "Designer");
-    ht_insert(ht, "Shiv", "Coder");
-    ht_insert(ht, "Ousher", "Business");
-    print_ht(ht);
+    //Inserting data into the hashtable
+    //NOTE: Keys and Values can be of any type, they are strings in this example
+    ht_insert(ht, "Alice Smith", "Software Engineer");
+    ht_insert(ht, "Bob Johnson", "Graphic Designer");
+    ht_insert(ht, "Charlie Brown", "Project Manager");
+    ht_insert(ht, "David Lee", "Data Analyst");
+    ht_insert(ht, "Emily White", "Marketing Specialist");
+    ht_insert(ht, "Frank Miller", "Accountant");
+    ht_insert(ht, "Grace Davis", "HR Coordinator");
+    ht_insert(ht, "Henry Wilson", "Electrician");
+    ht_insert(ht, "Ivy Chen", "Nurse");
+    ht_insert(ht, "Jack Taylor", "Teacher");
     
+    //Using ht_get to lookup if a key has a corresponding value, then printing the 
+    //entry with print_entry
+    print_entry(ht_get(ht, "Ivy Chen"), NULL);
+    ht_remove(ht, "Ivy Chen");
+    print_entry(ht_get(ht, "Ivy Chen"), NULL);
+    printf("-------------------------------\n");
+    //Using ht_print to print the whole hashtable
+    ht_print(ht);
+    
+    //Calling ht_destroy to destroy the table and free all memory
+    ht_destroy(ht);
+    free(config);
+    config = NULL;
     return 0;
 }
 

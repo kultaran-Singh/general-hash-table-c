@@ -67,8 +67,6 @@ void ht_init(HashTable* ht){
 
 bool ht_destroy(HashTable* ht){
     for(int i = 0; i < ht->num_buckets; i++){
-        if(ht->buckets[i] == NULL)
-            continue;
         list_for_each(ht->buckets[i], free_entry, ht);
         list_destroy(ht->buckets[i]);
     }
@@ -85,8 +83,9 @@ void ht_double_size(HashTable* ht){
     //old array, then it clears the ht->buckets array and resizes it, then it rehashes the elements from
     //old buckets array to the newly resized ht->buckets array
 
-    size_t old_size = ht->size; //Storing the old size
+    //Storing the old values
     List** old_buckets = calloc(ht->num_buckets, sizeof(List*));
+    int old_num_buckets = ht->num_buckets;
 
     //This loop Copies all elements from the num_buckets into old_buckets
     for(int i = 0; i < ht->num_buckets; i++){
@@ -100,17 +99,25 @@ void ht_double_size(HashTable* ht){
         ht->buckets[i] = 0;
     }
     //Doubling the size of the new buckets array
-    ht->buckets = realloc(ht->buckets, sizeof(List*) * ht->num_buckets * 2);
     ht->num_buckets = ht->num_buckets * 2;
+    ht->buckets = realloc(ht->buckets, sizeof(List*) * ht->num_buckets);
     ht->size = 0;
     
     //Initializing the new elements
     ht_init(ht);
 
-    for(int i = 0; i < old_size; i++){
+    for(int i = 0; i < old_num_buckets; i++){
         list_for_each(old_buckets[i], ht_rehash, ht); //Stores key and value, rehashes key, gets index, inserts it into new table, returns nothing.
+        
     }
-    
+    //Deleting the backup old_buckets
+    for(int i = 0; i < old_num_buckets; i++){
+        if(old_buckets[i] == NULL)
+            continue;
+        list_for_each(old_buckets[i], free_entry, ht);
+        list_destroy(old_buckets[i]);
+    }
+    free(old_buckets);
     return;
 }
 
@@ -148,6 +155,10 @@ void* ht_get(HashTable* ht, void* key){
         return NULL;
     }
     Entry* entry = get_by_key(ht->buckets[index], key, get_key, ht->key_compare);
+    if(entry == NULL){
+        printf("Entry not found.\n");
+        return NULL;
+    }
     return entry;
 }
 
@@ -171,6 +182,9 @@ void* get_value(void* element){
 }
 
 void print_entry(void* element, void* context){
+    if(element == NULL){
+        return;
+    }
     Entry* entry = element;
     char* keyPrint = (char*)entry->key;
     char* valuePrint = (char*)entry->value;

@@ -316,15 +316,12 @@ void* get_by_key(List* l, void* key, void* (*get_key)(void* element), bool (*com
     //The first function should get a key from the element and the second function should compare the returned key and
     //compare it to the second key.
     if(l == NULL){
-        printf("ERROR: List does not exist\n");
         return NULL;
     }
     if(l->head == NULL){
-        printf("ERROR: List is empty\n");
         return NULL;
     }
     if(get_key == NULL || compare_key == NULL){
-        printf("ERROR: No Operation Provided\n");
         return NULL;
     }
     Node* current_node = l->head;

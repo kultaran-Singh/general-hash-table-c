@@ -12,13 +12,13 @@ typedef struct HashTableConfig{
     void (*free_value)(void* value);
 }HashTableConfig;
 
-//Lifecylce Functions
+//Lifecycle Functions
 HashTable* ht_create(int num_buckets, HashTableConfig* config);
 void ht_init(HashTable* ht);
 bool ht_destroy(HashTable* ht);
 void ht_double_size(HashTable* ht);
 
-//Generic Functions
+//Insertion/Removal Functions
 void ht_insert(HashTable* ht, void* key, void* value);
 void* ht_get(HashTable* ht, void* key);
 bool ht_remove(HashTable* ht, void* key);
